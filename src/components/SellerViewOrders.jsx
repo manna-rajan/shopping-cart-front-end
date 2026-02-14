@@ -53,6 +53,7 @@ const SellerViewOrders = () => {
                             <div className="card-body">
                                 <h5 className="card-title">Customer: {order.customerId ? order.customerId.name : 'N/A'} ({order.customerId ? order.customerId.email : 'N/A'})</h5>
                                 <p className="card-text text-muted"><small>This order contains at least one product sold by you. The total amount shown is for the customer's entire order.</small></p>
+                                <hr />
                                 <div className="row row-cols-1 row-cols-md-2 g-3 mt-2">
                                     {order.items.map(item => {
                                         const isSoldByCurrentUser = item.productId && item.productId.sellerId === sellerId;
