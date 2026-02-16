@@ -105,10 +105,10 @@ const View = () => {
                             products.map((item) => (
                                 <div key={item._id} className="col">
                                     <div className="card bg-secondary-subtle h-100">
-                                        <div className="card-body d-flex flex-column gap-2">
+                                        <div className="card-body d-flex flex-column">
                                             <img src={item.link} className="img-fluid rounded p-2 object-fit-contain" height={100} alt={item.name} />
                                             <h5 className="card-title">{item.name}</h5>
-                                            <h6 className="card-subtitle text-muted">₹{item.price ? item.price.toFixed(2) : '0.00'}</h6>
+                                            <h6 className="card-subtitle mb-2 text-muted">₹{item.price ? item.price.toFixed(2) : '0.00'}</h6>
                                             <p className="card-text">{item.description}</p>
                                             <p className="card-text"><small className="text-muted">Quantity: {item.quantity}</small></p>
                                             <p className="card-text"><small className="text-muted">Sold by: {item.sellerName}</small></p>
@@ -118,7 +118,7 @@ const View = () => {
                                                 <button className="btn btn-secondary mt-auto" disabled>Out of Stock</button>
                                             )}
                                             {sellerId && item.sellerId.toString() === sellerId && (
-                                                <button className="btn btn-danger" onClick={() => handleDeleteProduct(item._id)}>Delete Product</button>
+                                                <button className="btn btn-danger mt-2" onClick={() => handleDeleteProduct(item._id)}>Delete Product</button>
                                             )}
                                         </div>
                                     </div>

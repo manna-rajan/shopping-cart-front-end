@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 const AddProducts = () => {
-
+  const sellerId = sessionStorage.getItem("sellerid");
   const navigate = useNavigate();
   const [input, changeInput] = useState(
     {
@@ -12,16 +12,17 @@ const AddProducts = () => {
       description: "",
       quantity: "",
       sellerName: sessionStorage.getItem("sellername"),
-        sellerId: sessionStorage.getItem("sellerid"),
-        link: ""
+      sellerId: sessionStorage.getItem("sellerid"),
+      link: ""
     }
   );
+
   const [validated, setValidated] = useState(false);
   useEffect(() => {
-    if (!sessionStorage.getItem("sellerid")) {
+    if (!sellerId) {
       navigate("/");
     }
-  },[navigate]);
+  }, [navigate]);
 
   const handleChange = (e) => {
     changeInput({
@@ -40,6 +41,7 @@ const AddProducts = () => {
 
     const trimmedInput = {
       ...input,
+      sellerId: sellerId,
       name: input.name.trim(),
       description: input.description.trim(),
       link: input.link.trim(),
@@ -60,14 +62,14 @@ const AddProducts = () => {
     }
   };
   return (
-   <div className="container">
-    <Nav />
+    <div className="container">
+      <Nav />
       <div className="row mt-3">
         <div className="col-12">
           <div className="card bg-secondary-subtle text-danger-emphasis mb-3">
             <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Add Product</h5>
-              
+
               <div>
                 <label htmlFor="name" className="form-label">Product Name</label>
                 <input type="text" className="form-control" id="name" name='name' value={input.name} onChange={handleChange} required pattern="^[a-zA-Z0-9\s-]+$" placeholder="e.g. Wireless Mouse" />
@@ -75,7 +77,7 @@ const AddProducts = () => {
               </div>
               <div>
                 <label htmlFor="price" className="form-label">Price</label>
-                <input type="number" className="form-control" id="price" name='price' value={input.price} onChange={handleChange} required min="1"  placeholder="e.g. 499.99" />
+                <input type="number" className="form-control" id="price" name='price' value={input.price} onChange={handleChange} required min="1" placeholder="e.g. 499.99" />
                 <div className="invalid-feedback">Please enter a valid price (e.g., 19.99).</div>
               </div>
               <div>
@@ -94,12 +96,12 @@ const AddProducts = () => {
                 <div className="invalid-feedback">Please enter a valid URL for the product image.</div>
               </div>
               <div>
-              <button type="submit" className="btn btn-primary">Add Product</button>
-            </div>
-          </form>
+                <button type="submit" className="btn btn-primary">Add Product</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   )
 }
