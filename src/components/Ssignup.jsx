@@ -10,14 +10,23 @@ const Ssignup = () => {
       email: "",
       password: ""
     }
-  )
+  );
+  const [validated, setValidated] = useState(false);
   const handleChange = (e) => {
     changeInput({
       ...input,
       [e.target.name]: e.target.value
     });
   };
-  const valueRead = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
+      return;
+    }
+
     const trimmedInput = {
       ...input,
       name: input.name.trim(),
@@ -41,7 +50,7 @@ const Ssignup = () => {
       <div className="row mt-5 ">
         <div className="col-12">
           <div className="card bg-secondary-subtle text-danger-emphasis">
-            <div className="card-body d-flex flex-column gap-3">
+            <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Seller Sign Up</h5>
               <div>
                 <label htmlFor="nameInput" className="form-label">Name</label>
@@ -50,7 +59,7 @@ const Ssignup = () => {
               </div>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" pattern='^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$' placeholder='e.g. john.doe@example.com' name='email' value={input.email} onChange={handleChange} required />
+                <input type="email" className="form-control" id="emailInput" pattern="^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$" placeholder='e.g. john.doe@example.com' name='email' value={input.email} onChange={handleChange} required />
                 <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
               </div>
               <div>
@@ -58,9 +67,9 @@ const Ssignup = () => {
                 <input type="password" className="form-control" id="passwordInput" required pattern='^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$' placeholder='Min 8 chars, with letters, numbers & symbols' name='password' value={input.password} onChange={handleChange} />
                 <div className="invalid-feedback">Password must be at least 8 characters long and include a letter, a number, and a special character (@$!%*?&._-).</div>
               </div>
-              <button type="submit" className="btn btn-primary" onClick={valueRead}>Sign Up</button>
+              <button type="submit" className="btn btn-primary">Sign Up</button>
 
-            </div>
+            </form>
           </div>
         </div>
       </div>

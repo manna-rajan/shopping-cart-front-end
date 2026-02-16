@@ -9,14 +9,23 @@ const Csignin = () => {
       email: "",
       password: ""
     }
-  )
+  );
+  const [validated, setValidated] = useState(false);
   const handleChange = (e) => {
     changeInput({
       ...input,
       [e.target.name]: e.target.value
     });
   };
-  const valueRead = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
+      return;
+    }
+
     const trimmedInput = {
       ...input,
       email: input.email.trim()
@@ -40,11 +49,11 @@ const Csignin = () => {
       <div className="row mt-5">
         <div className="col-12">
           <div className="card bg-secondary-subtle text-danger-emphasis mb-3">
-            <div className="card-body d-flex flex-column gap-3">
+            <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Customer Sign In</h5>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" pattern='^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$' placeholder='e.g. john.doe@example.com' name='email' value={input.email} onChange={handleChange} required />
+                <input type="email" className="form-control" id="emailInput" pattern="^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$" placeholder='e.g. john.doe@example.com' name='email' value={input.email} onChange={handleChange} required />
                 <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
               </div>
               <div>
@@ -53,7 +62,7 @@ const Csignin = () => {
                 <div className="invalid-feedback">Password must be at least 8 characters long and include a letter, a number, and a special character (@$!%*?&._-).</div>
               </div>
               <div>
-                <button type="submit" className="btn btn-primary w-100" onClick={valueRead}>Sign In</button>
+                <button type="submit" className="btn btn-primary w-100">Sign In</button>
               </div>
               <div>
                 <Link to="/customer/signup" className="btn btn-outline-primary w-100">Sign Up as Customer</Link>
@@ -61,7 +70,7 @@ const Csignin = () => {
               <div>
                 <Link to="/seller/signin" className="btn btn-outline-primary w-100">Seller Sign In</Link>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

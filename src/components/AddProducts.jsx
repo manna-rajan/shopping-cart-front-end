@@ -15,12 +15,13 @@ const AddProducts = () => {
         sellerId: sessionStorage.getItem("sellerid"),
         link: ""
     }
-  )
+  );
+  const [validated, setValidated] = useState(false);
   useEffect(() => {
     if (!sessionStorage.getItem("sellerid")) {
       navigate("/");
     }
-  },[]);
+  },[navigate]);
 
   const handleChange = (e) => {
     changeInput({
@@ -28,10 +29,24 @@ const AddProducts = () => {
       [e.target.name]: e.target.value
     });
   };
-  const valueRead = async () => {
-    console.log(input);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
+      return;
+    }
+
+    const trimmedInput = {
+      ...input,
+      name: input.name.trim(),
+      description: input.description.trim(),
+      link: input.link.trim(),
+    };
+    console.log(trimmedInput);
     try {
-      const response = await axios.post("http://localhost:3001/seller/addproduct", input);
+      const response = await axios.post("http://localhost:3001/seller/addproduct", trimmedInput);
       if (response.data.status === "success") {
         alert("Added successfully");
         // Navigate to the view page to see the new product
@@ -50,7 +65,7 @@ const AddProducts = () => {
       <div className="row mt-3">
         <div className="col-12">
           <div className="card bg-secondary-subtle text-danger-emphasis mb-3">
-            <div className="card-body d-flex flex-column gap-3">
+            <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Add Product</h5>
               
               <div>
@@ -65,11 +80,12 @@ const AddProducts = () => {
               </div>
               <div>
                 <label htmlFor="description" className="form-label">Description</label>
-                <textarea className="form-control" id="description" name='description' value={input.description} onChange={handleChange} required minLength="10" placeholder="A short description of the product..." />
+                <textarea className="form-control" id="description" name='description' value={input.description} onChange={handleChange} required pattern="^\S+(\s+\S+){4,}.*$" placeholder="Please enter a description with at least 5 words" />
+                <div className="invalid-feedback">Please enter a description with at least 5 words.</div>
               </div>
               <div>
                 <label htmlFor="quantity" className="form-label">Quantity</label>
-                <input type="number" className="form-control" id="quantity" name='quantity' value={input.quantity} onChange={handleChange} required min="0" pattern="\d+" placeholder="e.g. 50" />
+                <input type="number" className="form-control" id="quantity" name='quantity' value={input.quantity} onChange={handleChange} required min="1" pattern="\d+" placeholder="e.g. 50" />
                 <div className="invalid-feedback">Please enter a valid quantity (a whole number).</div>
               </div>
               <div>
@@ -78,9 +94,9 @@ const AddProducts = () => {
                 <div className="invalid-feedback">Please enter a valid URL for the product image.</div>
               </div>
               <div>
-              <button type="submit" className="btn btn-primary" onClick={valueRead}>Add Product</button>
+              <button type="submit" className="btn btn-primary">Add Product</button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
