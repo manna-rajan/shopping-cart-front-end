@@ -7,6 +7,7 @@ const View = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchWord, setSearchWord] = useState("");
+    const [addedProducts, setAddedProducts] = useState(new Set());
     const customerId = sessionStorage.getItem("customerid");
     const sellerId = sessionStorage.getItem("sellerid");
 
@@ -48,9 +49,18 @@ const View = () => {
         }
     }
     const handleDeleteProduct = async (productId) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) {
+            return;
+        }
         try {
-            await axios.post(`http://localhost:3001/seller/removeproduct`, { productId, sellerId });
-            fetchAllProducts();
+            const response = await axios.post(`http://localhost:3001/seller/removeproduct`, { productId, sellerId });
+            if (response.data.status === "success") {
+                alert(response.data.message || "Product deleted successfully.");
+                // Update the UI by filtering out the deleted product, which is more efficient than refetching.
+                setProducts(currentProducts => currentProducts.filter(p => p._id !== productId));
+            } else {
+                alert(response.data.message || "Failed to delete product.");
+            }
         } catch (err) {
             console.error("Error deleting product:", err);
             // Display the specific error message from the backend if available
@@ -66,7 +76,8 @@ const View = () => {
         try {
             const response = await axios.post("http://localhost:3001/customer/addtocart", { customerId, productId });
             if (response.data.status === "success") {
-                alert("Product added to cart successfully.");
+                // On success, update the button's state and show an alert
+                setAddedProducts(prev => new Set(prev).add(productId));
             } else {
                 alert(response.data.message || "Failed to add product to cart.");
             }
@@ -105,7 +116,7 @@ const View = () => {
                             products.map((item) => (
                                 <div key={item._id} className="col">
                                     <div className="card bg-secondary-subtle h-100">
-                                        <div className="card-body d-flex flex-column">
+                                        <div className="card-body d-flex flex-column gap-2">
                                             <img src={item.link} className="img-fluid rounded p-2 object-fit-contain" height={100} alt={item.name} />
                                             <h5 className="card-title">{item.name}</h5>
                                             <h6 className="card-subtitle mb-2 text-muted">₹{item.price ? item.price.toFixed(2) : '0.00'}</h6>
@@ -113,7 +124,11 @@ const View = () => {
                                             <p className="card-text"><small className="text-muted">Quantity: {item.quantity}</small></p>
                                             <p className="card-text"><small className="text-muted">Sold by: {item.sellerName}</small></p>
                                             {item.quantity > 0 ? (
-                                                <button className="btn btn-primary mt-auto" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                                                addedProducts.has(item._id) ? (
+                                                    <button className="btn btn-success mt-auto" disabled>Added</button>
+                                                ) : (
+                                                    <button className="btn btn-primary mt-auto" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                                                )
                                             ) : (
                                                 <button className="btn btn-secondary mt-auto" disabled>Out of Stock</button>
                                             )}

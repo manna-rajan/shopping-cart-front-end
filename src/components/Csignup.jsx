@@ -3,6 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Csignup = () => {
+    const VALIDATION_PATTERNS = {
+        name: "^[a-zA-Z0-9\\s]+$",
+        email: "^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\\).+[a-zA-Z]{2,}$",
+        password: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$",
+        phone: "^(\\+91-)?(0)?\\s?[6-9][0-9]{9}$"
+    };
+
     const navigate=useNavigate();
   const [input, setInput] = useState(
     { 
@@ -21,6 +28,15 @@ const Csignup = () => {
     });
   };
 
+  const handleBlur = (e) => {
+    // If validation has already been triggered, do nothing.
+    if (validated) return;
+
+    // If the field that lost focus is invalid, turn on validation for the whole form.
+    if (e.currentTarget.checkValidity() === false) {
+      setValidated(true);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -55,22 +71,22 @@ const Csignup = () => {
               <h5 className="card-title">Customer Sign Up</h5>
               <div>
                 <label htmlFor="nameInput" className="form-label">Name</label>
-                <input type="text" className="form-control" id="nameInput" name='name' value={input.name} onChange={handleChange} required pattern='^[a-zA-Z\s]+$' placeholder='e.g. John Doe' />
-                <div className="invalid-feedback">Please provide a valid name. Only letters and spaces are allowed.</div>
+                <input type="text" className="form-control" id="nameInput" name='name' value={input.name} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.name} placeholder='e.g. John Doe 2' />
+                <div className="invalid-feedback">Please provide a valid name. Only letters,numbers and spaces are allowed.</div>
               </div>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} required pattern="^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$" placeholder='e.g. john.doe@example.com' />
+                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder='e.g. john.doe@example.com' />
                 <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="password" className="form-control" id="passwordInput" name='password' value={input.password} onChange={handleChange} required pattern='^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$' placeholder='Min 8 chars, with letters, numbers & symbols' />
+                <input type="password" className="form-control" id="passwordInput" name='password' value={input.password} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' />
                 <div className="invalid-feedback">Password must be at least 8 characters long and include a letter, a number, and a special character (@$!%*?&._-).</div>
               </div>
               <div>
                 <label htmlFor="phone" className="form-label">Phone</label>
-                <input type="tel" className="form-control" id="phone" pattern="^(\+91-)?(0)?\s?[6-9][0-9]{9}$" required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} />
+                <input type="tel" className="form-control" id="phone" pattern={VALIDATION_PATTERNS.phone} required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} onBlur={handleBlur} />
                 <div className="invalid-feedback">Please enter a valid 10-digit phone number starting with 6-9, optionally with a +91- prefix.</div>
               </div>
               <button type="submit" className="btn btn-primary">Sign Up</button>

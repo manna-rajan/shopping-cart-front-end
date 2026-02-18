@@ -4,6 +4,11 @@ import { useNavigate, Link } from 'react-router-dom';
 
 
 const Ssignin = () => {
+  const VALIDATION_PATTERNS = {
+    email: "^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.+[a-zA-Z]{2,}$",
+    password: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"
+  };
+
   const navigate = useNavigate();
   const [input, changeInput] = useState(
     {
@@ -18,6 +23,16 @@ const Ssignin = () => {
       ...input,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleBlur = (e) => {
+    // If validation has already been triggered, do nothing.
+    if (validated) return;
+
+    // If the field that lost focus is invalid, turn on validation for the whole form.
+    if (e.currentTarget.checkValidity() === false) {
+      setValidated(true);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -54,12 +69,12 @@ const Ssignin = () => {
               <h5 className="card-title">Seller Sign In</h5>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} required />
+                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder="e.g. seller@example.com" />
                 <div className="invalid-feedback">Please provide a valid email.</div>
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="password" className="form-control" id="passwordInput" name="password" value={input.password} onChange={handleChange} required />
+                <input type="password" className="form-control" id="passwordInput" name="password" pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' value={input.password} onChange={handleChange} onBlur={handleBlur} required />
                 <div className="invalid-feedback">Please provide your password.</div>
               </div>
               <button type="submit" className="btn btn-primary w-100">Sign In</button>

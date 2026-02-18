@@ -92,10 +92,6 @@ const CustomerViewOrders = () => {
                         <div key={order._id} className="card mb-4 shadow-sm">
                             <div className="card-header bg-light">
                                 <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                                    <strong>Status:</strong>
-                                    <span className={`badge ms-2 ${order.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark'}`}>
-                                        {order.paymentStatus}
-                                    </span>
                                     <div className="mb-2 mb-md-0"><strong>Order ID:</strong> {order._id}</div>
                                     <div className="mb-2 mb-md-0"><strong>Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</div>
                                     <div>
