@@ -68,12 +68,12 @@ const Csignin = () => {
               <h5 className="card-title">Customer Sign In</h5>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} placeholder='e.g. john.doe@example.com' pattern={VALIDATION_PATTERNS.email} onChange={handleChange} onBlur={handleBlur} required />
+                <input type="text" className="form-control" id="emailInput" name='email' value={input.email} placeholder='e.g. john.doe@example.com' pattern={VALIDATION_PATTERNS.email} onChange={handleChange} onBlur={handleBlur} required />
                 <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="password" className="form-control" id="passwordInput" name="password" pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' value={input.password} onChange={handleChange} onBlur={handleBlur} required />
+                <input type="text" className="form-control" id="passwordInput" name="password" pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' value={input.password} onChange={handleChange} onBlur={handleBlur} required />
                 <div className="invalid-feedback">Please provide your password.</div>
               </div>
               <button type="submit" className="btn btn-primary w-100">Sign In</button>

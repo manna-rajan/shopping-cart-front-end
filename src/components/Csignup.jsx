@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Csignup = () => {
     const VALIDATION_PATTERNS = {
         name: "^[a-zA-Z0-9\\s]+$",
-        email: "^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\\).+[a-zA-Z]{2,}$",
+        email: "^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$",
         password: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$",
         phone: "^(\\+91-)?(0)?\\s?[6-9][0-9]{9}$"
     };
@@ -22,6 +22,7 @@ const Csignup = () => {
   const [validated, setValidated] = useState(false);
 
   const handleChange = (e) => {
+    console.log(`${e.target.name} validity:`, e.target.validity);
     setInput({
       ...input,
       [e.target.name]: e.target.value
@@ -76,17 +77,17 @@ const Csignup = () => {
               </div>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder='e.g. john.doe@example.com' />
+                <input type="text" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder='e.g. john.doe@example.com' />
                 <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="password" className="form-control" id="passwordInput" name='password' value={input.password} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' />
+                <input type="text" className="form-control" id="passwordInput" name='password' value={input.password} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' />
                 <div className="invalid-feedback">Password must be at least 8 characters long and include a letter, a number, and a special character (@$!%*?&._-).</div>
               </div>
               <div>
                 <label htmlFor="phone" className="form-label">Phone</label>
-                <input type="tel" className="form-control" id="phone" pattern={VALIDATION_PATTERNS.phone} required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} onBlur={handleBlur} />
+                <input type="text" className="form-control" id="phone" pattern={VALIDATION_PATTERNS.phone} required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} onBlur={handleBlur} />
                 <div className="invalid-feedback">Please enter a valid 10-digit phone number starting with 6-9, optionally with a +91- prefix.</div>
               </div>
               <button type="submit" className="btn btn-primary">Sign Up</button>
