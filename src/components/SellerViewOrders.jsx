@@ -53,7 +53,7 @@ const SellerViewOrders = () => {
                             <div className="card-body">
                                 <h5 className="card-title">Customer: {order.customerId ? order.customerId.name : 'N/A'} ({order.customerId ? order.customerId.email : 'N/A'})</h5>
                                 <p className="card-text text-muted"><small>This order contains at least one product sold by you. The total amount shown is for the customer's entire order.</small></p>
-                                <div className="row row-cols-1 row-cols-md-2 g-3 mt-2">
+                                <div className="row row-cols-1 g-3">
                                     {order.items.map(item => {
                                         const isSoldByCurrentUser = item.productId && item.productId.sellerId === sellerId;
                                         return (
@@ -63,12 +63,12 @@ const SellerViewOrders = () => {
                                                         <div className="col-md-4 d-flex align-items-center justify-content-center p-2">
                                                             <img src={item.productId?.link} className="img-fluid rounded object-fit-contain" alt={item.productId?.name} height={100} />
                                                         </div>
-                                                        <div className="col-md-8">
+                                                        <div className="col-md-8 d-flex flex-column justify-content-center">
                                                             <div className="card-body">
-                                                                <h6 className="card-title">{item.productId ? item.productId.name : 'Product not found'}</h6>
+                                                                <h6 className="card-title mt-2">{item.productId ? item.productId.name : 'Product not found'}</h6>
                                                                 <p className="card-text mb-1"><small className="text-muted">Unit Price: ₹{item.productId ? item.productId.price.toFixed(2) : 'N/A'}</small></p>
                                                                 <p className="card-text mb-1"><small className="text-muted">Quantity: {item.quantity}</small></p>
-                                                                <p className="card-text mb-2"><strong>Subtotal: ₹{item.productId ? (item.productId.price * item.quantity).toFixed(2) : 'N/A'}</strong></p>
+                                                                <p className="card-text"><strong>Subtotal: ₹{item.productId ? (item.productId.price * item.quantity).toFixed(2) : 'N/A'}</strong></p>
                                                                 <span className={`badge ${isSoldByCurrentUser ? "bg-success" : "bg-secondary"}`}>
                                                                     {isSoldByCurrentUser ? 'Sold by you' : 'Sold by another seller'}
                                                                 </span>
