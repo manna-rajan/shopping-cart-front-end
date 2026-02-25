@@ -5,19 +5,19 @@ import { useNavigate } from 'react-router-dom';
 const Csignup = () => {
   const VALIDATION_RULES = {
     name: {
-      pattern: new RegExp("^[a-zA-Z0-9\\s]+$"),
+      pattern: /^[a-zA-Z0-9\s]+$/,
       message: "Only letters, numbers, and spaces are allowed."
     },
     email: {
-      pattern: new RegExp("^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$"),
+      pattern: /^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
       message: "Please enter a valid email format (e.g., user@example.com)."
     },
     password: {
-      pattern: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"),
+      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$/,
       message: "Password must be at least 8 characters long and include a letter, a number, and a special character."
     },
     phone: {
-      pattern: new RegExp("^(\\+91-)?(0)?\\s?[6-9][0-9]{9}$"),
+      pattern: /^(\+91-)?(0)?\s?[6-9][0-9]{9}$/,
       message: "Please enter a valid 10-digit phone number starting with 6-9."
     }
   };

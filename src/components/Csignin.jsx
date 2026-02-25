@@ -5,11 +5,11 @@ import { useNavigate, Link } from 'react-router-dom';
 const Csignin = () => {
   const VALIDATION_RULES = {
     email: {
-      pattern: new RegExp("^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$"),
+      pattern: /^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
       message: "Please enter a valid email format (e.g., user@example.com)."
     },
     password: {
-      pattern: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"),
+      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$/,
       message: "Password must be at least 8 characters and include a letter, number, and special character."
     }
   };

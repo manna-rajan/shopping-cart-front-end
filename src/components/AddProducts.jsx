@@ -5,19 +5,19 @@ import Nav from './Nav';
 const AddProducts = () => {
   const VALIDATION_PATTERNS = {
     name: {
-      pattern: new RegExp("^[a-zA-Z0-9\\s-]+$"),
+      pattern: /^[a-zA-Z0-9\s-]+$/,
       message: "Please enter a valid product name (letters, numbers, spaces, and hyphens only)."
     },
     price: {
-      pattern: new RegExp("^\\d+(\\.\\d{1,2})?$"),
+      pattern: /^\d+(\.\d{1,2})?$/,
       message: "Please enter a valid price (e.g., 19.99)."
     },
     description: {
-      pattern: new RegExp("^\\S+(\\s+\\S+){4,}.*$"),
+      pattern: /^\S+(\s+\S+){4,}.*$/,
       message: "Please enter a description with at least 5 words."
     },
     quantity: {
-      pattern: new RegExp("^[1-9]\\d*$"),
+      pattern: /^[1-9]\d*$/,
       message: "Please enter a valid quantity (a whole number greater than 0)."
     }
   };
@@ -63,9 +63,6 @@ const AddProducts = () => {
     }
     if (input.price && parseFloat(input.price) < 1) {
       newErrors.price = "Price must be at least 1.";
-    }
-    if (input.quantity && parseInt(input.quantity, 10) < 1) {
-      newErrors.quantity = "Quantity must be at least 1.";
     }
     return newErrors;
   };
