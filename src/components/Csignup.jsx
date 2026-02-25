@@ -3,49 +3,65 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Csignup = () => {
-    const VALIDATION_PATTERNS = {
-        name: "^[a-zA-Z0-9\\s]+$",
-        email: "^[a-zA-Z0-9._-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$",
-        password: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$",
-        phone: "^(\\+91-)?(0)?\\s?[6-9][0-9]{9}$"
-    };
-
-    const navigate=useNavigate();
-  const [input, setInput] = useState(
-    { 
-        name: "",
-        email: "",
-        password: "",
-        phone: ""
+  const VALIDATION_RULES = {
+    name: {
+      pattern: new RegExp("^[a-zA-Z0-9\\s]+$"),
+      message: "Only letters, numbers, and spaces are allowed."
+    },
+    email: {
+      pattern: new RegExp("^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$"),
+      message: "Please enter a valid email format (e.g., user@example.com)."
+    },
+    password: {
+      pattern: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"),
+      message: "Password must be at least 8 characters long and include a letter, a number, and a special character."
+    },
+    phone: {
+      pattern: new RegExp("^(\\+91-)?(0)?\\s?[6-9][0-9]{9}$"),
+      message: "Please enter a valid 10-digit phone number starting with 6-9."
     }
-  );
-  const [validated, setValidated] = useState(false);
+  };
+
+  const navigate = useNavigate();
+  const [input, setInput] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: ""
+  });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    console.log(`${e.target.name} validity:`, e.target.validity);
+    const { name, value } = e.target;
     setInput({
       ...input,
-      [e.target.name]: e.target.value
+      [name]: value
     });
-  };
-
-  const handleBlur = (e) => {
-    // If validation has already been triggered, do nothing.
-    if (validated) return;
-
-    // If the field that lost focus is invalid, turn on validation for the whole form.
-    if (e.currentTarget.checkValidity() === false) {
-      setValidated(true);
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
     }
   };
+
+  const validate = () => {
+    const newErrors = {};
+    for (const field in VALIDATION_RULES) {
+      if (!input[field]) {
+        newErrors[field] = "This field is required.";
+      } else if (!VALIDATION_RULES[field].pattern.test(input[field])) {
+        newErrors[field] = VALIDATION_RULES[field].message;
+      }
+    }
+    return newErrors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-      setValidated(true);
+    const formErrors = validate();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
       return;
     }
+    setErrors({});
 
     const trimmedInput = { ...input, name: input.name.trim(), email: input.email.trim(), phone: input.phone.trim() };
 
@@ -64,31 +80,31 @@ const Csignup = () => {
   };
 
   return (
-   <div className="container">
-      <div className="row mt-5">
-        <div className="col-12">
+    <div className="container">
+      <div className="row justify-content-center mt-5">
+        <div className="col-12 col-md-6">
           <div className="card bg-secondary-subtle text-danger-emphasis">
-            <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
+            <form className="card-body d-flex flex-column gap-3" onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Customer Sign Up</h5>
               <div>
                 <label htmlFor="nameInput" className="form-label">Name</label>
-                <input type="text" className="form-control" id="nameInput" name='name' value={input.name} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.name} placeholder='e.g. John Doe 2' />
-                <div className="invalid-feedback">Please provide a valid name. Only letters,numbers and spaces are allowed.</div>
+                <input type="text" className={`form-control ${errors.name ? 'is-invalid' : ''}`} id="nameInput" name='name' value={input.name} onChange={handleChange} required placeholder='e.g. John Doe 2' />
+                {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
               </div>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="text" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder='e.g. john.doe@example.com' />
-                <div className="invalid-feedback">Please provide a valid email address (e.g., alphanumeric._-@.-example.com).</div>
+                <input type="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} id="emailInput" name='email' value={input.email} onChange={handleChange} required placeholder='e.g. john.doe@example.com' />
+                {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="text" className="form-control" id="passwordInput" name='password' value={input.password} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' />
-                <div className="invalid-feedback">Password must be at least 8 characters long and include a letter, a number, and a special character (@$!%*?&._-).</div>
+                <input type="password" className={`form-control ${errors.password ? 'is-invalid' : ''}`} id="passwordInput" name='password' value={input.password} onChange={handleChange} required placeholder='Min 8 chars, with letters, numbers & symbols' />
+                {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
               </div>
               <div>
                 <label htmlFor="phone" className="form-label">Phone</label>
-                <input type="text" className="form-control" id="phone" pattern={VALIDATION_PATTERNS.phone} required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} onBlur={handleBlur} />
-                <div className="invalid-feedback">Please enter a valid 10-digit phone number starting with 6-9, optionally with a +91- prefix.</div>
+                <input type="tel" className={`form-control ${errors.phone ? 'is-invalid' : ''}`} id="phone" required placeholder="e.g 10 digit number starting with 6-9, +91- is optional code" name="phone" value={input.phone} onChange={handleChange} />
+                {errors.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
               </div>
               <button type="submit" className="btn btn-primary">Sign Up</button>
             </form>

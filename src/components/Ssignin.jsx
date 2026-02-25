@@ -4,45 +4,55 @@ import { useNavigate, Link } from 'react-router-dom';
 
 
 const Ssignin = () => {
-  const VALIDATION_PATTERNS = {
-    email: "^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.+[a-zA-Z]{2,}$",
-    password: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"
+  const VALIDATION_RULES = {
+    email: {
+      pattern: new RegExp("^[a-zA-Z0-9._+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$"),
+      message: "Please enter a valid email format (e.g., user@example.com)."
+    },
+    password: {
+      pattern: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&._-])[A-Za-z\\d@$!%*?&._-]{8,}$"),
+      message: "Password must be at least 8 characters and include a letter, number, and special character."
+    }
   };
 
   const navigate = useNavigate();
-  const [input, changeInput] = useState(
-    {
-      email: "",
-      password: ""
-    }
-  );
-  const [validated, setValidated] = useState(false);
+  const [input, setInput] = useState({
+    email: "",
+    password: ""
+  });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    changeInput({
+    const { name, value } = e.target;
+    setInput({
       ...input,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
+    }
   };
 
-  const handleBlur = (e) => {
-    // If validation has already been triggered, do nothing.
-    if (validated) return;
-
-    // If the field that lost focus is invalid, turn on validation for the whole form.
-    if (e.currentTarget.checkValidity() === false) {
-      setValidated(true);
+  const validate = () => {
+    const newErrors = {};
+    for (const field in VALIDATION_RULES) {
+      if (!input[field]) {
+        newErrors[field] = "This field is required.";
+      } else if (!VALIDATION_RULES[field].pattern.test(input[field])) {
+        newErrors[field] = VALIDATION_RULES[field].message;
+      }
     }
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-      setValidated(true);
+    const formErrors = validate();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
       return;
     }
+    setErrors({});
 
     try {
       const response = await axios.post("http://localhost:3001/seller/signin", input);
@@ -52,30 +62,30 @@ const Ssignin = () => {
         sessionStorage.setItem("sellername", response.data.sellerName);
         navigate("/seller/addproduct");
       } else {
-        alert("Invalid credentials");
+        alert(response.data.message || "Invalid credentials");
       }
     } catch (err) {
       console.error("Signin error:", err);
-      alert("An error occurred during sign-in.");
+      alert(err.response?.data?.message || "An error occurred during sign-in.");
     }
   };
 
   return (
     <div className="container">
-      <div className="row mt-5">
-        <div className=" col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+      <div className="row mt-5 justify-content-center">
+        <div className="col-12 col-md-6">
           <div className="card bg-secondary-subtle text-danger-emphasis">
-            <form className={`card-body d-flex flex-column gap-3 ${validated ? 'was-validated' : ''}`} onSubmit={handleSubmit} noValidate>
+            <form className="card-body d-flex flex-column gap-3" onSubmit={handleSubmit} noValidate>
               <h5 className="card-title">Seller Sign In</h5>
               <div>
                 <label htmlFor="emailInput" className="form-label">Email address</label>
-                <input type="text" className="form-control" id="emailInput" name='email' value={input.email} onChange={handleChange} onBlur={handleBlur} required pattern={VALIDATION_PATTERNS.email} placeholder="e.g. seller@example.com" />
-                <div className="invalid-feedback">Please provide a valid email.</div>
+                <input type="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} id="emailInput" name='email' value={input.email} onChange={handleChange} required placeholder="e.g. seller@example.com" />
+                {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
               </div>
               <div>
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="text" className="form-control" id="passwordInput" name="password" pattern={VALIDATION_PATTERNS.password} placeholder='Min 8 chars, with letters, numbers & symbols' value={input.password} onChange={handleChange} onBlur={handleBlur} required />
-                <div className="invalid-feedback">Please provide your password.</div>
+                <input type="password" className={`form-control ${errors.password ? 'is-invalid' : ''}`} id="passwordInput" name="password" placeholder='Min 8 chars, with letters, numbers & symbols' value={input.password} onChange={handleChange} required />
+                {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
               </div>
               <button type="submit" className="btn btn-primary w-100">Sign In</button>
               <div className="mb-3">
