@@ -9,14 +9,8 @@ const Cart = () => {
     const customerId = sessionStorage.getItem("customerid");
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!customerId) {
-            // Redirect to signin page if not logged in
-            navigate("/customer/signin");
-            return;
-        }
-
-        const fetchCart = async () => {
+    const fetchCart = useCallback(async () => {
+        if (customerId) {
             try {
                 const response = await axios.post("http://34.231.116.119:3001/customer/viewcart", { customerId });
                 setCart(Array.isArray(response.data) ? response.data : []);
@@ -24,10 +18,17 @@ const Cart = () => {
                 console.error("Error fetching cart:", err);
                 alert("Could not fetch cart items.");
             }
-        };
+        }
+    }, [customerId]);
 
+    useEffect(() => {
+        if (!customerId) {
+            // Redirect to signin page if not logged in
+            navigate("/customer/signin");
+            return;
+        }
         fetchCart();
-    }, [customerId, navigate]);
+    }, [customerId, navigate, fetchCart]);
 
     useEffect(() => {
         const total = cart.reduce((acc, item) => {
