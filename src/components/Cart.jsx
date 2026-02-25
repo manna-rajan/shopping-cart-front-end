@@ -12,7 +12,7 @@ const Cart = () => {
     const fetchCart = useCallback(async () => {
         if (customerId) {
             try {
-                const response = await axios.post("http://localhost:3001/customer/viewcart", { customerId });
+                const response = await axios.post("http://34.231.116.119:3001/customer/viewcart", { customerId });
                 if (Array.isArray(response.data)) {
                     setCart(response.data);
                 } else {
@@ -56,7 +56,7 @@ const Cart = () => {
 
     const handleRemoveFromCart = async (productId) => {
         try {
-            const response = await axios.post("http://localhost:3001/customer/removefromcart", { customerId, productId });
+            const response = await axios.post("http://34.231.116.119:3001/customer/removefromcart", { customerId, productId });
             if (response.data.status === "success") {
                 alert("Product removed from cart.");
                 fetchCart(); // Refresh cart
@@ -78,7 +78,7 @@ const Cart = () => {
 
         try {
             // Step 1: Get session ID from backend
-            const orderCreationResponse = await axios.post("http://localhost:3001/customer/create-payment-session", {
+            const orderCreationResponse = await axios.post("http://34.231.116.119:3001/customer/create-payment-session", {
                 customerId,
                 totalAmount: totalPrice
             });

@@ -32,7 +32,7 @@ const CustomerViewOrders = () => {
 
                 try {
                     // Verify payment and create order on the backend
-                    await axios.post("http://localhost:3001/orders", {
+                    await axios.post("http://34.231.116.119:3001/orders", {
                         customerId,
                         items: pendingOrder.items,
                         cashfreeOrderId,
@@ -53,7 +53,7 @@ const CustomerViewOrders = () => {
                 // 2. Fetch all orders for the customer (normal page load)
                 setMessage('Loading your orders...');
                 try {
-                    const response = await axios.post("http://localhost:3001/customer/vieworders", { customerId });
+                    const response = await axios.post("http://34.231.116.119:3001/customer/vieworders", { customerId });
                     if (Array.isArray(response.data) && response.data.length > 0) {
                         const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
                         setOrders(sortedOrders);

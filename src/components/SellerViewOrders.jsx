@@ -16,7 +16,7 @@ const SellerViewOrders = () => {
 
         const fetchOrders = async () => {
             try {
-                const { data } = await axios.post("http://localhost:3001/seller/vieworders", { sellerId });
+                const { data } = await axios.post("http://34.231.116.119:3001/seller/vieworders", { sellerId });
                 // Sort orders by date, newest first, for better UX
                 const sortedOrders = data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
                 setOrders(sortedOrders);

@@ -55,7 +55,7 @@ const Ssignin = () => {
     setErrors({});
 
     try {
-      const response = await axios.post("http://localhost:3001/seller/signin", input);
+      const response = await axios.post("http://34.231.116.119:3001/seller/signin", input);
       if (response.data.status === "success") {
         sessionStorage.clear();
         sessionStorage.setItem("sellerid", response.data.sellerId);

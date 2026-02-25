@@ -66,7 +66,7 @@ const Csignup = () => {
     const trimmedInput = { ...input, name: input.name.trim(), email: input.email.trim(), phone: input.phone.trim() };
 
     try {
-      const response = await axios.post("http://localhost:3001/customer/signup", trimmedInput);
+      const response = await axios.post("http://34.231.116.119:3001/customer/signup", trimmedInput);
       if (response.data.status === "success") {
         alert("Signed up successfully! Please sign in.");
         navigate("/customer/signin");

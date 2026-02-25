@@ -70,7 +70,7 @@ const Ssignup = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:3001/seller/signup", trimmedInput);
+      const response = await axios.post("http://34.231.116.119:3001/seller/signup", trimmedInput);
       if (response.data.status === "success") {
         alert("Signed up successfully! Please sign in.");
         navigate("/seller/signin");

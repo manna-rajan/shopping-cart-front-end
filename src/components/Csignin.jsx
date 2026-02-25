@@ -54,7 +54,7 @@ const Csignin = () => {
     setErrors({});
 
     try {
-      const response = await axios.post("http://localhost:3001/customer/signin", input);
+      const response = await axios.post("http://34.231.116.119:3001/customer/signin", input);
       if (response.data.status === "success") {
         sessionStorage.clear();
         sessionStorage.setItem("customerid", response.data.customerId);
