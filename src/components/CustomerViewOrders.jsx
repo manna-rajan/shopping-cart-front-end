@@ -28,8 +28,6 @@ const CustomerViewOrders = () => {
                 // Immediately remove item to prevent re-processing on refresh
                 sessionStorage.removeItem('pendingOrder');
 
-                setMessage('Verifying your payment, please wait...');
-
                 try {
                     // Verify payment and create order on the backend
                     await axios.post("http://34.231.116.119:3001/orders", {
@@ -51,21 +49,25 @@ const CustomerViewOrders = () => {
                 return; // Stop further execution in this render
             } else {
                 // 2. Fetch all orders for the customer (normal page load)
-                setMessage('Loading your orders...');
+                const hasPreExistingMessage = message && !message.startsWith('Loading');
+                if (!hasPreExistingMessage) {
+                    setMessage('Loading your orders...');
+                }
+
                 try {
                     const response = await axios.post("http://34.231.116.119:3001/customer/vieworders", { customerId });
                     if (Array.isArray(response.data) && response.data.length > 0) {
                         const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
                         setOrders(sortedOrders);
-                        setMessage(''); // Clear loading message
+                        if (!hasPreExistingMessage) setMessage(''); // Clear loading message, but preserve existing messages
                     } else {
                         setOrders([]);
-                        setMessage(response.data.message || 'You have no past orders.');
+                        if (!hasPreExistingMessage) setMessage(response.data.message || 'You have no past orders.');
                     }
                 } catch (err) {
                     console.error("Error fetching orders:", err);
                     setOrders([]);
-                    setMessage("Could not fetch your orders. Please try again later.");
+                    if (!hasPreExistingMessage) setMessage("Could not fetch your orders. Please try again later.");
                 }
             }
         };
@@ -83,8 +85,9 @@ const CustomerViewOrders = () => {
 
                     {/* Display a message if there is one */}
                     {message && !message.startsWith('Loading') && (
-                        <div className={`alert ${message.includes('successful') ? 'alert-success' : 'alert-info'}`} role="alert">
+                        <div className={`alert ${message.includes('successful') ? 'alert-success' : 'alert-danger'} alert-dismissible fade show`} role="alert">
                             {message}
+                            <button type="button" className="btn-close" onClick={() => setMessage('')} aria-label="Close"></button>
                         </div>
                     )}
 
