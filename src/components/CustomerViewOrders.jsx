@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Nav from './Nav';
 
 const CustomerViewOrders = () => {
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
     const [orders, setOrders] = useState([]);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
@@ -16,65 +18,65 @@ const CustomerViewOrders = () => {
             return;
         }
 
-        const processPageLoad = async () => {
-            const params = new URLSearchParams(location.search);
-            const cashfreeOrderId = params.get('order_id');
-            const pendingOrderJSON = sessionStorage.getItem('pendingOrder');
+        const params = new URLSearchParams(location.search);
+        const cashfreeOrderId = params.get('order_id');
 
-            // 1. Handle return from Cashfree payment
+        // Part 1: Handle the redirect from the payment gateway if order_id is present
+        const handlePaymentRedirect = async () => {
+            const pendingOrderJSON = sessionStorage.getItem('pendingOrder');
             if (cashfreeOrderId && pendingOrderJSON) {
                 const pendingOrder = JSON.parse(pendingOrderJSON);
-
-                // Immediately remove item to prevent re-processing on refresh
                 sessionStorage.removeItem('pendingOrder');
 
                 try {
-                    // Verify payment and create order on the backend
-                    await axios.post("http://34.231.116.119:3001/orders", {
+                    await axios.post(`${API_BASE_URL}/orders`, {
                         customerId,
                         items: pendingOrder.items,
                         cashfreeOrderId,
                         totalAmount: pendingOrder.totalAmount
                     });
-
                     setMessage('Payment successful! Your order has been placed.');
                 } catch (err) {
                     console.error("Error verifying payment and creating order:", err);
                     const errorMessage = err.response?.data?.message || "Failed to verify your payment. Please contact support.";
                     setMessage(errorMessage);
                 } finally {
-                    // Clean up the URL. This triggers a re-render which will then fetch the orders.
+                    // Clean up the URL to prevent reprocessing and trigger a re-render to fetch orders.
                     navigate('/customer/vieworders', { replace: true });
-                }
-                return; // Stop further execution in this render
-            } else {
-                // 2. Fetch all orders for the customer (normal page load)
-                const hasPreExistingMessage = message && !message.startsWith('Loading');
-                if (!hasPreExistingMessage) {
-                    setMessage('Loading your orders...');
-                }
-
-                try {
-                    const response = await axios.post("http://34.231.116.119:3001/customer/vieworders", { customerId });
-                    if (Array.isArray(response.data) && response.data.length > 0) {
-                        const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-                        setOrders(sortedOrders);
-                        if (!hasPreExistingMessage) setMessage(''); // Clear loading message, but preserve existing messages
-                    } else {
-                        setOrders([]);
-                        if (!hasPreExistingMessage) setMessage(response.data.message || 'You have no past orders.');
-                    }
-                } catch (err) {
-                    console.error("Error fetching orders:", err);
-                    setOrders([]);
-                    if (!hasPreExistingMessage) setMessage("Could not fetch your orders. Please try again later.");
                 }
             }
         };
 
-        processPageLoad();
+        // Part 2: Fetch all orders for the customer (will not run if we are being redirected from payment)
+        const fetchOrders = async () => {
+            if (cashfreeOrderId) return; // Don't fetch if we're still on the redirect URL
 
-    }, [customerId, location, navigate]); // Rerun when location changes (e.g., after redirect)
+            const hasPreExistingMessage = message && !message.startsWith('Loading');
+            if (!hasPreExistingMessage) {
+                setMessage('Loading your orders...');
+            }
+
+            try {
+                const response = await axios.post(`${API_BASE_URL}/customer/vieworders`, { customerId });
+                if (Array.isArray(response.data) && response.data.length > 0) {
+                    const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+                    setOrders(sortedOrders);
+                    if (!hasPreExistingMessage) setMessage(''); // Clear loading message
+                } else {
+                    setOrders([]);
+                    if (!hasPreExistingMessage) setMessage(response.data.message || 'You have no past orders.');
+                }
+            } catch (err) {
+                console.error("Error fetching orders:", err);
+                setOrders([]);
+                if (!hasPreExistingMessage) setMessage("Could not fetch your orders. Please try again later.");
+            }
+        };
+
+        handlePaymentRedirect();
+        fetchOrders();
+
+    }, [customerId, location.search, navigate, message]); // Rerun when location.search changes
 
     return (
         <div className="container">

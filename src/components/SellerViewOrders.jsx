@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 
 const SellerViewOrders = () => {
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
     const sellerId = sessionStorage.getItem("sellerid");
@@ -16,7 +18,7 @@ const SellerViewOrders = () => {
 
         const fetchOrders = async () => {
             try {
-                const { data } = await axios.post("http://34.231.116.119:3001/seller/vieworders", { sellerId });
+                const { data } = await axios.post(`${API_BASE_URL}/seller/vieworders`, { sellerId });
                 // Sort orders by date, newest first, for better UX
                 const sortedOrders = data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
                 setOrders(sortedOrders);

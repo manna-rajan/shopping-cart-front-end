@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 
 const Cart = () => {
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+    const CASHFREE_MODE = process.env.REACT_APP_CASHFREE_MODE || "sandbox";
+
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const customerId = sessionStorage.getItem("customerid");
@@ -11,8 +14,8 @@ const Cart = () => {
 
     const fetchCart = useCallback(async () => {
         if (customerId) {
-            try {
-                const response = await axios.post("http://34.231.116.119:3001/customer/viewcart", { customerId });
+            try { //
+                const response = await axios.post(`${API_BASE_URL}/customer/viewcart`, { customerId });
                 setCart(Array.isArray(response.data) ? response.data : []);
             } catch (err) {
                 console.error("Error fetching cart:", err);
@@ -57,7 +60,7 @@ const Cart = () => {
 
     const handleRemoveFromCart = async (productId) => {
         try {
-            const response = await axios.post("http://34.231.116.119:3001/customer/removefromcart", { customerId, productId });
+            const response = await axios.post(`${API_BASE_URL}/customer/removefromcart`, { customerId, productId });
             if (response.data.status === "success") {
                 alert("Product removed from cart.");
                 fetchCart(); // Refresh cart
@@ -79,7 +82,7 @@ const Cart = () => {
 
         try {
             // Step 1: Get session ID from backend
-            const orderCreationResponse = await axios.post("http://34.231.116.119:3001/customer/create-payment-session", {
+            const orderCreationResponse = await axios.post(`${API_BASE_URL}/customer/create-payment-session`, {
                 customerId,
                 totalAmount: totalPrice
             });
@@ -100,7 +103,7 @@ const Cart = () => {
 
             // Initialize the SDK object
             const cashfree = window.Cashfree({
-                mode: "sandbox" // Use "production" for live
+                mode: CASHFREE_MODE // Use "production" for live
             });
 
             // Step 3: Save details and Redirect

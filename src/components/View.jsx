@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 
 const View = () => {
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchWord, setSearchWord] = useState("");
@@ -14,7 +16,7 @@ const View = () => {
 
     const fetchAllProducts = useCallback(async () => {
         try {
-            const response = await axios.post("http://34.231.116.119:3001/allproducts");
+            const response = await axios.post(`${API_BASE_URL}/allproducts`);
             setProducts(response.data);
         } catch (err) {
             console.error("Error fetching products:", err);
@@ -36,7 +38,7 @@ const View = () => {
             return;
         }
         try {
-            const response = await axios.post("http://34.231.116.119:3001/searchproducts", { name: searchWord.trim() });
+            const response = await axios.post(`${API_BASE_URL}/searchproducts`, { name: searchWord.trim() });
             if (response.data.length > 0) {
                 setProducts(response.data);
             } else {
@@ -53,7 +55,7 @@ const View = () => {
             return;
         }
         try {
-            const response = await axios.post(`http://34.231.116.119:3001/seller/removeproduct`, { productId, sellerId });
+            const response = await axios.post(`${API_BASE_URL}/seller/removeproduct`, { productId, sellerId });
             if (response.data.status === "success") {
                 alert(response.data.message || "Product deleted successfully.");
                 // Update the UI by filtering out the deleted product, which is more efficient than refetching.
@@ -74,7 +76,7 @@ const View = () => {
             return;
         }
         try {
-            const response = await axios.post("http://34.231.116.119:3001/customer/addtocart", { customerId, productId });
+            const response = await axios.post(`${API_BASE_URL}/customer/addtocart`, { customerId, productId });
             if (response.data.status === "success") {
                 // On success, update the button's state and show an alert
                 setAddedProducts(prev => new Set(prev).add(productId));

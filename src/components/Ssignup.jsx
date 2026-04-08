@@ -20,6 +20,8 @@ const Ssignup = () => {
     }
   };
 
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
   const navigate = useNavigate();
   const [input, setInput] = useState(
     {
@@ -70,7 +72,7 @@ const Ssignup = () => {
     };
 
     try {
-      const response = await axios.post("http://34.231.116.119:3001/seller/signup", trimmedInput);
+      const response = await axios.post(`${API_BASE_URL}/seller/signup`, trimmedInput);
       if (response.data.status === "success") {
         alert("Signed up successfully! Please sign in.");
         navigate("/seller/signin");

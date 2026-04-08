@@ -22,6 +22,8 @@ const AddProducts = () => {
     }
   };
 
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
   const sellerId = sessionStorage.getItem("sellerid");
   const navigate = useNavigate();
   const [input, setInput] = useState({
@@ -94,7 +96,7 @@ const AddProducts = () => {
     };
     console.log("Input:", trimmedInput);
     try {
-      const response = await axios.post("http://34.231.116.119:3001/seller/addproduct", trimmedInput);
+      const response = await axios.post(`${API_BASE_URL}/seller/addproduct`, trimmedInput);
       if (response.data.status === "success") {
         alert("Added successfully");
         // Navigate to the view page to see the new product

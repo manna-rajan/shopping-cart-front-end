@@ -15,6 +15,8 @@ const Ssignin = () => {
     }
   };
 
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://34.231.116.119:3001";
+
   const navigate = useNavigate();
   const [input, setInput] = useState({
     email: "",
@@ -55,7 +57,7 @@ const Ssignin = () => {
     setErrors({});
 
     try {
-      const response = await axios.post("http://34.231.116.119:3001/seller/signin", input);
+      const response = await axios.post(`${API_BASE_URL}/seller/signin`, input);
       if (response.data.status === "success") {
         sessionStorage.clear();
         sessionStorage.setItem("sellerid", response.data.sellerId);
