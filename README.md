@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+# Shopping Cart Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React frontend for a MERN shopping cart platform with dedicated customer and seller journeys, cart workflows, and checkout integration.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react&logoColor=white)
+![Router](https://img.shields.io/badge/Routing-React%20Router-CA4245?logo=reactrouter&logoColor=white)
+![Axios](https://img.shields.io/badge/API-Axios-5A29E4?logo=axios&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/UI-Bootstrap-7952B3?logo=bootstrap&logoColor=white)
 
-In the project directory, you can run:
+## Live Links
 
-### `npm start`
+| Deployment | URL |
+| --- | --- |
+| Frontend (Render) | https://shopping-cart-front-end.onrender.com/ |
+| AWS EC2 | http://34.231.116.119:3000/ |
+| Backend Repository | https://github.com/manna-rajan/shopping-cart-back-end |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Highlights
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Separate customer and seller signup/signin flows
+- Product browse and search
+- Seller product add/remove actions
+- Cart add/remove handling
+- Cashfree-powered checkout
+- Order history for both user types
 
-### `npm test`
+## Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Layer | Tools |
+| --- | --- |
+| Frontend | React, React Router, Axios, Bootstrap |
+| Backend (paired repo) | Node.js, Express, MongoDB, Mongoose |
+| Payments | Cashfree |
 
-### `npm run build`
+## Quick Start
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js 14+
+- npm
+- Running backend API (local or remote)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Install Dependencies
 
-### `npm run eject`
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. Configure Environment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Create a `.env` file in this folder:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```env
+REACT_APP_BACKEND_URL=http://localhost:3001
+REACT_APP_CASHFREE_MODE=sandbox
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Configuration notes:
+- If `REACT_APP_BACKEND_URL` is missing, the app falls back to `http://34.231.116.119:3001`.
+- Set `REACT_APP_CASHFREE_MODE=production` for live payments.
 
-## Learn More
+### 4. Run Locally
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Frontend runs on http://localhost:3000
 
-### Code Splitting
+## Project Layout
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Path | Purpose |
+| --- | --- |
+| `shopping-cart-frontend/` | React client |
+| `shopping-cart-backend/` | Node/Express API |
 
-### Analyzing the Bundle Size
+## Backend Quick Reference
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+From the project root:
 
-### Making a Progressive Web App
+```bash
+cd shopping-cart-backend
+npm install
+node app.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Example backend env (`shopping.env`):
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```env
+MONGO_URI=your_mongodb_connection_string
+FRONTEND_URL=http://localhost:3000
+CASHFREE_APP_ID=your_cashfree_app_id
+CASHFREE_SECRET_KEY=your_cashfree_secret_key
+PORT=3001
+```
