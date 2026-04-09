@@ -76,7 +76,7 @@ const CustomerViewOrders = () => {
         handlePaymentRedirect();
         fetchOrders();
 
-    }, [customerId, location.search, navigate, message]); // Rerun when location.search changes
+    }, [customerId, location.search, navigate, message, API_BASE_URL]); // Rerun when location.search changes
 
     return (
         <div className="container">

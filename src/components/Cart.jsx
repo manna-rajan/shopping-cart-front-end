@@ -22,7 +22,7 @@ const Cart = () => {
                 alert("Could not fetch cart items.");
             }
         }
-    }, [customerId]);
+    }, [customerId, API_BASE_URL]);
 
     useEffect(() => {
         if (!customerId) {

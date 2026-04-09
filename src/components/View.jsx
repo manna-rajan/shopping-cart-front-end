@@ -22,7 +22,7 @@ const View = () => {
             console.error("Error fetching products:", err);
             alert("Could not fetch products.");
         }
-    }, []);
+    }, [API_BASE_URL]);
 
     useEffect(() => {
         fetchAllProducts();

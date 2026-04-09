@@ -30,7 +30,7 @@ const SellerViewOrders = () => {
         };
 
         fetchOrders();
-    }, [sellerId, navigate]);
+    }, [sellerId, navigate, API_BASE_URL]);
 
     return (
         <div className="container">
