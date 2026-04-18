@@ -35,7 +35,11 @@ const SellerViewOrders = () => {
     return (
         <div className="container">
             <Nav />
-            <h2 className="mt-3">Your Orders</h2>
+            <div className="row mt-3">
+                <div className="col-12">
+                    <h2>Your Orders</h2>
+                </div>
+            </div>
             <div className="row g-3 mt-3">
                 {orders.length > 0 ? orders.map(order => (
                     <div key={order._id} className="col-12">

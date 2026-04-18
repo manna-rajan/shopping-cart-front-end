@@ -82,7 +82,7 @@ const CustomerViewOrders = () => {
         <div className="container">
             <Nav />
             <div className="row mt-3">
-                <div className="col">
+                <div className="col-12">
                     <h2 className="mb-4">Your Past Orders</h2>
 
                     {/* Display a message if there is one */}
